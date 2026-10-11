@@ -1,0 +1,84 @@
+/* Additional styles for admin pages */
+
+/* Admin sidebar */
+.admin-sidebar {
+    min-height: calc(100vh - 70px);
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+}
+
+.admin-nav .nav-link {
+    padding: 10px 15px;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.admin-nav .nav-link:hover {
+    background: #e9ecef;
+    color: #2e7d32;
+}
+
+.admin-nav .nav-link.active {
+    background: #2e7d32;
+    color: white;
+}
+
+/* Data tables */
+.data-table {
+    font-size: 14px;
+}
+
+.data-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Quick stats cards */
+.stats-card {
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.cart-count-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cart - Agri Smart Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product-card {
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            width: 250px;
+            display: inline-block;
+            background: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cart-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            font-weight: bold;
+        }
+        .debug-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .parameter-info {
+            background: #e9f7fe;
+            border-left: 4px solid #17a2b8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4 text-primary">🛒 Test Add to Cart System - Agri Smart Hub</h1>
+        
+        <!-- Cart Display -->
+        <div class="cart-display">
+            <i class="fas fa-shopping-cart me-2"></i>
+            Cart: <span id="cart-count">0</span> items
+        </div>
+        
+        <!-- Status Message -->
+        <div id="status-message" class="alert" style="display: none;"></div>
+        
+        <!-- Parameter Info -->
+        <div class="parameter-info">
+            <strong>📝 Important:</strong> The system accepts both <code>product_id</code> and <code>id</code> parameters.
+            <br>Example: <code>product_id=10</code> OR <code>id=10</code>
+        </div>
+        
+        <!-- Section 1: Simple Buttons -->
+        <div class="test-section">
+            <h3 class="text-primary">🧪 Test 1: Simple JavaScript Buttons</h3>
+            <p>These buttons use JavaScript onclick handlers:</p>
+            
+            <div class="test-buttons">
+                <button class="btn btn-primary" onclick="testAddToCartJS(1)">
+                    <i class="fas fa-cart-plus"></i> Test Product 1 (ID: 1)
+                </button>
+                
+                <button class="btn btn-success" onclick="testAddToCartJS(2)">
+                    <i class="fas fa-cart-plus"></i> Test Product 2 (ID: 2)
+                </button>
+                
+                <button class="btn btn-warning" onclick="testAddToCartJS(3)">
+                    <i class="fas fa-cart-plus"></i> Test Product 3 (ID: 3)
+                </button>
+                
+                <button class="btn btn-info" onclick="testAddToCartJS(10)">
+                    <i class="fas fa-seedling"></i> Tomato Seeds (ID: 10)
+                </button>
+            </div>
+            
+            <div class="mt-3">
+                <label for="custom-product-id" class="form-label">Custom Product ID:</label>
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="number" id="custom-product-id" class="form-control" value="7" min="1">
+                    <button class="btn btn-outline-primary" onclick="testCustomProduct()">
+                        <i class="fas fa-play"></i> Test
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2: Product Cards -->
+        <div class="test-section">
+            <h3 class="text-primary">🛍️ Test 2: Product Cards (Realistic)</h3>
+            <p>These mimic actual product listings with different button implementations:</p>
+            
+            <div class="d-flex flex-wrap">
+                <!-- Card 1: Data attribute -->
+                <div class="product-card">
+                    <h5 class="text-primary">🍅 Tomato Seeds F1 Hybrid</h5>
+                    <p class="text-muted">High-yield, disease-resistant tomato seeds</p>
+                    <p class="text-success fw-bold fs-5">Ksh 450.00</p>
+                    <div class="mt-3">
+                        <button class="btn btn-sm btn-primary add-to-cart-btn" 
+                                data-product-id="10">
+                            <i class="fas fa-cart-plus"></i> Add to Cart (data-attr)
+                        </button>
+                        <small class="d-block text-muted mt-1">Uses: <code>data-product-id="10"</code></small>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Onclick -->
+                <div class="product-card">
+                    <h5 class="text-primary">🌽 Maize Seeds Premium</h5>
+                    <p class="text-muted">Premium hybrid maize seeds</p>
+                    <p class="text-success fw-bold fs-5">Ksh 150.00</p>
+                    <div class="mt-3">
+                        <button class="btn btn-sm btn-success" 
+                                onclick="addToCartDirectJS(11)">
+                            <i class="fas fa-cart-plus"></i> Add to Cart (onclick)
+                        </button>
+                        <small class="d-block text-muted mt-1">Uses: <code>onclick="addToCartDirectJS(11)"</code></small>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Link (will be intercepted) -->
+                <div class="product-card">
+                    <h5 class="text-primary">🧱 Organic Compost 50kg</h5>
+                    <p class="text-muted">100% organic compost from farm waste</p>
+                    <p class="text-success fw-bold fs-5">Ksh 1200.00</p>
+                    <div class="mt-3">
+                        <a href="includes/add_to_cart.php?id=12" 
+                           class="btn btn-sm btn-warning cart-link">
+                            <i class="fas fa-cart-plus"></i> Add to Cart (link)
+                        </a>
+                        <small class="d-block text-muted mt-1">Uses: <code>href="includes/add_to_cart.php?id=12"</code></small>
+                    </div>
+                </div>
+                
+                <!-- Card 4: Form -->
+                <div class="product-card">
+                    <h5 class="text-primary">💧 Sprayer 20L Manual</h5>
+                    <p class="text-muted">Knapsack sprayer for pesticides</p>
+                    <p class="text-success fw-bold fs-5">Ksh 3,500.00</p>
+                    <div class="mt-3">
+                        <form class="cart-form" data-product-id="13">
+                            <input type="hidden" name="product_id" value="13">
+                            <button type="submit" class="btn btn-sm btn-info">
+                                <i class="fas fa-cart-plus"></i> Add to Cart (form)
+                            </button>
+                        </form>
+                        <small class="d-block text-muted mt-1">Uses: <code>&lt;form&gt;</code> with hidden input</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 3: Debug Tools -->
+        <div class="test-section">
+            <h3 class="text-primary">🔧 Test 3: Debug & Diagnostic Tools</h3>
+            
+            <div class="test-buttons">
+                <button class="btn btn-info" onclick="testDirectPOST()">
+                    <i class="fas fa-vial"></i> Test Direct POST
+                </button>
+                
+                <button class="btn btn-secondary" onclick="checkSession()">
+                    <i class="fas fa-search"></i> Check Session
+                </button>
+                
+                <button class="btn btn-dark" onclick="clearCart()">
+                    <i class="fas fa-trash"></i> Clear Cart
+                </button>
+                
+                <button class="btn btn-outline-danger" onclick="testGetRequest()">
+                    <i class="fas fa-exclamation-triangle"></i> Test GET Request
+                </button>
+                
+                <button class="btn btn-outline-success" onclick="showHelp()">
+                    <i class="fas fa-question-circle"></i> Show Help
+                </button>
+            </div>
+            
+            <div class="mt-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="auto-scroll" checked>
+                    <label class="form-check-label" for="auto-scroll">Auto-scroll debug output</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="show-timestamps" checked>
+                    <label class="form-check-label" for="show-timestamps">Show timestamps</label>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="clearDebugOutput()">
+                    <i class="fas fa-eraser"></i> Clear Output
+                </button>
+            </div>
+        </div>
+        
+        <!-- Debug Output -->
+        <div class="test-section">
+            <h3 class="text-primary">📊 Debug Output</h3>
+            <div class="debug-output" id="debug-output">
+[System] Test cart page initialized. Click buttons to test.
+            </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="test-section">
+            <h3 class="text-primary">🔗 Quick Test Links</h3>
+            <div class="test-buttons">
+                <a href="includes/add_to_cart.php?product_id=10" class="btn btn-outline-primary" target="_blank">
+                    GET: product_id=10
+                </a>
+                <a href="includes/add_to_cart.php?id=11" class="btn btn-outline-primary" target="_blank">
+                    GET: id=11
+                </a>
+                <a href="includes/add_to_cart.php?check_session=1" class="btn btn-outline-info" target="_blank">
+                    Check Session
+                </a>
+                <a href="includes/add_to_cart.php?get_count=1" class="btn btn-outline-info" target="_blank">
+                    Get Cart Count
+                </a>
+            </div>
+        </div>
+        
+        <!-- Back to Main Site -->
+        <div class="mt-4 text-center">
+            <a href="pages/index.php" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-left"></i> Back to Main Site
+            </a>
+            <button class="btn btn-outline-secondary btn-lg ms-2" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Refresh Page
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        let lastRequestTime = null;
+        
+        // ========== DEBUG FUNCTIONS ==========
+        function debugLog(message, type = 'info') {
+            const output = document.getElementById('debug-output');
+            const time = new Date().toLocaleTimeString();
+            const timestamp = document.getElementById('show-timestamps').checked ? `[${time}] ` : '';
+            
+            let prefix = '';
+            switch(type) {
+                case 'success': prefix = '✅ '; break;
+                case 'error': prefix = '❌ '; break;
+                case 'warning': prefix = '⚠️ '; break;
+                case 'request': prefix = '📤 '; break;
+                case 'response': prefix = '📥 '; break;
+                default: prefix = 'ℹ️ ';
+            }
+            
+            output.innerHTML += `${timestamp}${prefix}${message}\n`;
+            
+            if (document.getElementById('auto-scroll').checked) {
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+        
+        function clearDebugOutput() {
+            document.getElementById('debug-output').innerHTML = '[System] Debug output cleared.\n';
+        }
+        
+        function showStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status-message');
+            statusEl.className = `alert alert-${type}`;
+            statusEl.innerHTML = message;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // ========== CART FUNCTIONS ==========
+        function testAddToCartJS(productId) {
+            debugLog(`Testing JavaScript addToCart for product ID: ${productId}`, 'request');
+            addToCartUniversal(productId);
+        }
+        
+        function addToCartDirectJS(productId) {
+            debugLog(`Direct onclick addToCart for product ID: ${productId}`, 'request');
+            addToCartUniversal(productId);
+        }
+        
+        function testCustomProduct() {
+            const productId = document.getElementById('custom-product-id').value;
+            if (!productId || productId < 1) {
+                showStatus('Please enter a valid product ID', 'danger');
+                return;
+            }
+            debugLog(`Testing custom product ID: ${productId}`, 'request');
+            addToCartUniversal(productId);
+        }
+        
+        // Universal add to cart function
+        function addToCartUniversal(productId, quantity = 1) {
+            lastRequestTime = new Date();
+            
+            // Show loading state on button
+            const activeButton = event?.target;
+            if (activeButton) {
+                const originalText = activeButton.innerHTML;
+                activeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                activeButton.disabled = true;
+                
+                setTimeout(() => {
+                    activeButton.innerHTML = originalText;
+                    activeButton.disabled = false;
+                }, 2000);
+            }
+            
+            // Try different parameter names
+            const params = new URLSearchParams();
+            
+            // Try with 'product_id' first (standard)
+            params.append('product_id', productId);
+            params.append('quantity', quantity);
+            
+            debugLog(`Sending POST request with params: ${params.toString()}`, 'request');
+            
+            fetch('includes/add_to_cart.php', {
+                method: 'POST',
+                body: params,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                debugLog(`Response status: ${response.status} ${response.statusText}`, 'response');
+                return response.json();
+            })
+            .then(data => {
+                const responseTime = new Date() - lastRequestTime;
+                debugLog(`Response (${responseTime}ms): ${JSON.stringify(data, null, 2)}`, 'response');
+                
+                if (data.success) {
+                    updateCartCount(data.cart_count);
+                    showStatus(`✅ ${data.message}`, 'success');
+                    
+                    // Dispatch cart updated event
+                    document.dispatchEvent(new CustomEvent('cartUpdated', {
+                        detail: {
+                            productId: productId,
+                            cartCount: data.cart_count,
+                            productName: data.product_name,
+                            quantityAdded: data.quantity_added
+                        }
+                    }));
+                } else {
+                    showStatus(`❌ ${data.message}`, 'danger');
+                    
+                    // If failed with product_id, try with id
+                    if (data.debug && data.debug.missing_field === 'product_id') {
+                        debugLog('Trying with parameter name "id" instead...', 'warning');
+                        addToCartWithId(productId, quantity);
+                    }
+                }
+            })
+            .catch(error => {
+                debugLog(`Fetch error: ${error.message}`, 'error');
+                showStatus('❌ Network error. Please check console.', 'danger');
+            });
+        }
+        
+        // Alternative function using 'id' parameter
+        function addToCartWithId(productId, quantity = 1) {
+            const params = new URLSearchParams();
+            params.append('id', productId);
+            params.append('quantity', quantity);
+            
+            debugLog(`Trying with 'id' parameter: ${params.toString()}`, 'request');
+            
+            fetch('includes/add_to_cart.php', {
+                method: 'POST',
+                body: params,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                debugLog(`Response with 'id' param: ${JSON.stringify(data)}`, 'response');
+                if (data.success) {
+                    updateCartCount(data.cart_count);
+                    showStatus(`✅ ${data.message} (used 'id' parameter)`, 'success');
+                }
+            });
+        }
+        
+        // ========== TEST FUNCTIONS ==========
+        function testDirectPOST() {
+            debugLog('Testing direct POST request...', 'request');
+            
+            const formData = new FormData();
+            formData.append('product_id', '99');
+            formData.append('quantity', '2');
+            
+            fetch('includes/add_to_cart.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                debugLog(`Direct POST response: ${JSON.stringify(data)}`, 'response');
+                if (data.success) {
+                    updateCartCount(data.cart_count);
+                }
+            });
+        }
+        
+        function testGetRequest() {
+            debugLog('Testing GET request (should work during development)...', 'request');
+            
+            fetch('includes/add_to_cart.php?id=88&quantity=1')
+                .then(response => response.json())
+                .then(data => {
+                    debugLog(`GET response: ${JSON.stringify(data)}`, 'response');
+                    if (data.success) {
+                        updateCartCount(data.cart_count);
+                    }
+                });
+        }
+        
+        function checkSession() {
+            debugLog('Checking session status...', 'request');
+            
+            fetch('includes/add_to_cart.php?check_session=1')
+                .then(response => response.json())
+                .then(data => {
+                    debugLog(`Session data: ${JSON.stringify(data, null, 2)}`, 'response');
+                })
+                .catch(error => {
+                    debugLog(`Session check error: ${error.message}`, 'error');
+                });
+        }
+        
+        function clearCart() {
+            if (confirm('Are you sure you want to clear the entire cart?')) {
+                debugLog('Clearing cart...', 'warning');
+                
+                fetch('includes/add_to_cart.php?clear_cart=1')
+                    .then(response => response.json())
+                    .then(data => {
+                        debugLog(`Clear cart response: ${JSON.stringify(data)}`, 'response');
+                        if (data.success) {
+                            updateCartCount(0);
+                            showStatus('✅ Cart cleared successfully', 'success');
+                        }
+                    });
+            }
+        }
+        
+        function showHelp() {
+            const helpText = `
+=== HELP: Add to Cart Testing ===
+
+1. The system accepts both:
+   - 'product_id' parameter (preferred)
+   - 'id' parameter (fallback)
+
+2. Test buttons:
+   - JavaScript buttons: Use onclick handlers
+   - Data attribute buttons: Use data-product-id
+   - Links: Will be intercepted and converted to POST
+   - Forms: Will be intercepted
+
+3. Debug output shows:
+   - Request parameters
+   - Response data
+   - Timing information
+   - Error details
+
+4. Quick links:
+   - Use GET requests for direct testing
+   - Check session status
+   - Clear cart
+
+5. Common issues:
+   - Check browser console (F12)
+   - Check Network tab for requests
+   - Verify session is working
+   - Check PHP error logs
+            `;
+            
+            alert(helpText);
+            debugLog('Help information displayed', 'info');
+        }
+        
+        // ========== UI FUNCTIONS ==========
+        function updateCartCount(count) {
+            document.getElementById('cart-count').textContent = count;
+            
+            // Animate the cart display
+            const cartDisplay = document.querySelector('.cart-display');
+            cartDisplay.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                cartDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('Page loaded. Setting up event listeners...', 'info');
+            
+            // Intercept link clicks
+            document.querySelectorAll('a.cart-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = new URL(this.href);
+                    const productId = url.searchParams.get('id');
+                    if (productId) {
+                        debugLog(`Intercepted link click for product ID: ${productId}`, 'info');
+                        addToCartUniversal(productId);
+                    }
+                });
+            });
+            
+            // Intercept form submissions
+            document.querySelectorAll('form.cart-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const productId = this.querySelector('[name="product_id"]').value || 
+                                     this.getAttribute('data-product-id');
+                    if (productId) {
+                        debugLog(`Intercepted form submit for product ID: ${productId}`, 'info');
+                        addToCartUniversal(productId);
+                    }
+                });
+            });
+            
+            // Data attribute buttons
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    if (productId) {
+                        debugLog(`Data attribute button for product ID: ${productId}`, 'info');
+                        addToCartUniversal(productId);
+                    }
+                });
+            });
+            
+            // Load initial cart count
+            setTimeout(() => {
+                fetch('includes/add_to_cart.php?get_count=1')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.cart_count !== undefined) {
+                            updateCartCount(data.cart_count);
+                            debugLog(`Initial cart count: ${data.cart_count}`, 'info');
+                        }
+                    });
+            }, 100);
+        });
+        
+        // Listen for cart updates
+        document.addEventListener('cartUpdated', function(e) {
+            debugLog(`Cart updated event: Product ${e.detail.productId} (${e.detail.productName}) added. Total: ${e.detail.cartCount}`, 'success');
+        });
+        
+        // ========== INITIALIZE ==========
+        debugLog('Test cart system ready. Click any button to test.', 'success');
+        
+        // Show initial instructions
+        setTimeout(() => {
+            showStatus('Ready to test! Click any "Add to Cart" button to begin.', 'info');
+        }, 1000);
+    </script>
+</body>
+</html>
